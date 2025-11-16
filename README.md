@@ -46,21 +46,21 @@ Our Pipeline Architecture is shown below:
 ```
 Camera Feed
 ↓
-YOLOv11-Pose (keypoints + boxes)
+YOLOv11-Pose (Body Keypoints + Boundary Boxes)
 ↓
-ByteTrack (per-person track IDs)
+ByteTrack (Per-Person Track IDs)
 ↓
-Pose Buffers (sliding window)
+Pose Buffers (Sliding Window)
 ↓
-Depth Estimation (3D coordinates)
+Depth Estimation (3D Coordinates)
 ↓
-DeepFace (emotion analysis)
+DeepFace (Facial Expression Analysis)
 ↓
-ST-GCN (temporal action + distress classification)
+ST-GCN (Temporal Action + Distress Classification)
 ↓
-Fusion Engine (final smoothed distress status)
+Fusion Engine (Final Smoothed Distress Status)
 ↓
-Radar Controller (aims radar at targets)
+Radar Controller (Aims Radar at Targets)
 ```
 
 Each component runs in real time to produce continuous status updates for every tracked individual.
