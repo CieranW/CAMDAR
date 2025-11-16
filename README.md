@@ -32,7 +32,7 @@ Built to run on the **NVIDIA Jetson AGX Orin**, but compatible with any CUDA-ena
 7. [Running Real-Time Inference](#running-real-time-inference)
 8. [Docker Deployment](#docker-deployment)
 9. [Configuration Files](#configuration-files)
-10. [Alerts & GUI Dashboard] (#alerts--gui-dashboard)
+10. [Alerts & GUI Dashboard](#alerts--gui-dashboard)
 11. [Development Guidelines](#development-guidelines)
 12. [Troubleshooting / FAQ](#troubleshooting--faq)
 
