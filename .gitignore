@@ -1,0 +1,96 @@
+# -----------------------
+# Python cache / artifacts
+# -----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.sqlite3
+
+# Byte-compiled / optimized / etc.
+*.log
+
+# -----------------------
+# Virtual environments
+# -----------------------
+venv/
+.venv/
+env/
+ENV/
+
+# -----------------------
+# Environment files (real secrets)
+# -----------------------
+.env
+*.env
+
+# -----------------------
+# IDE / editor files
+# -----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# -----------------------
+# Jupyter
+# -----------------------
+.ipynb_checkpoints/
+
+# -----------------------
+# Test / coverage artifacts
+# -----------------------
+.coverage
+htmlcov/
+.pytest_cache/
+
+# -----------------------
+# Build / dist
+# -----------------------
+build/
+dist/
+*.egg-info/
+
+# -----------------------
+# Model weights and large binaries
+# (weights are managed outside git, or downloaded via tools)
+# -----------------------
+models/*/weights/
+models/*/weights/**
+
+# -----------------------
+# Datasets
+# -----------------------
+data/raw/
+data/processed/
+data/cache/
+dataset_cache/
+data/*.zip
+data/*.tar.gz
+data/*.mp4
+data/*.avi
+data/*.npy
+data/*.npz
+data/*.jpg
+data/*.png
+
+# Keep small things:
+!data/annotations/
+!data/examples/
+!data/README.md
+
+# -----------------------
+# Runtime artifacts
+# -----------------------
+runtime/logs/
+runtime/recordings/
+tmp/
+cache/
+logs/
+
+# -----------------------
+# Docker-related
+# -----------------------
+*.pid

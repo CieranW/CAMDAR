@@ -1,0 +1,73 @@
+# -----------------------
+# Git metadata
+# -----------------------
+.git
+.gitignore
+
+# -----------------------
+# Local virtual envs
+# -----------------------
+venv/
+.venv/
+env/
+ENV/
+
+# -----------------------
+# Environment files (real secrets)
+# -----------------------
+.env
+*.env
+
+# -----------------------
+# IDE / editor files
+# -----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# -----------------------
+# Python cache
+# -----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+
+# -----------------------
+# Tests and notebooks (not needed in runtime image)
+# -----------------------
+tests/
+notebooks/
+
+# -----------------------
+# Build artifacts
+# -----------------------
+build/
+dist/
+*.egg-info/
+
+# -----------------------
+# Datasets - do NOT bake into image
+# (mount or download at runtime instead)
+# -----------------------
+data/
+# If you really want tiny examples in the image, uncomment:
+# !data/examples/
+# !data/annotations/
+# !data/README.md
+
+# -----------------------
+# Model weights (optional: mount or download at runtime)
+# -----------------------
+models/*/weights/
+models/*/weights/**
+
+# -----------------------
+# Runtime artifacts
+# -----------------------
+runtime/
+tmp/
+cache/
+logs/
+*.log
