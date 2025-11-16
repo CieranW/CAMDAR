@@ -1,4 +1,4 @@
-# 🏥 Medical Distress Detection System
+# 🏥 CAMDAR
 
 _A real-time, multi-person, multi-sensor computer vision pipeline for detecting medical emergencies._
 
@@ -21,23 +21,23 @@ Built to run on the **NVIDIA Jetson AGX Orin**, but compatible with any CUDA-ena
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 
-1. [Pipeline Architecture](#pipeline-architecture)
-2. [Repository Structure](#repository-structure)
-3. [Rationale Behind Structure](#rationale-behind-structure)
-4. [Installation & Setup](#installation--setup)
-5. [Datasets](#datasets)
-6. [Training Models](#training-models)
-7. [Running Inference](#running-real-time-inference)
-8. [Docker Deployment](#docker-deployment)
-9. [Configuration Files](#configuration-files)
-10. [Development Guidelines](#development-guidelines)
-11. [Troubleshooting / FAQ](#troubleshooting--faq)
+1. [Pipeline Architecture](#-pipeline-architecture)
+2. [Repository Structure](#️-repository-structure)
+3. [Rationale Behind Structure](#-rationale-behind-structure)
+4. [Installation & Setup](#️-installation--setup)
+5. [Datasets](#-datasets)
+6. [Training Models](#%ef%b8%8f-training-models)
+7. [Running Inference](#-running-real-time-inference)
+8. [Docker Deployment](#-docker-deployment)
+9. [Configuration Files](#️-configuration-files)
+10. [Development Guidelines](#-development-guidelines)
+11. [Troubleshooting / FAQ](#-troubleshooting--faq)
 
 ---
 
-## 🔍 Pipeline Architecture
+## Pipeline Architecture
 
 The system operates **continuously and concurrently per camera**, analyzing all visible individuals with no per-person model duplication.
 
@@ -67,8 +67,9 @@ Each component runs in real time to produce continuous status updates for every 
 
 ---
 
-## 🗂️ Repository Structure
+## Repository Structure
 
+```
 CAMDAR/
 ├── README.md
 ├── requirements.txt
@@ -118,10 +119,11 @@ CAMDAR/
 │
 ├── tests/
 └── notebooks/
+```
 
 ---
 
-## 🧭 Rationale Behind Structure
+## Rationale Behind Structure
 
 ### Clear Separation of Concerns
 
@@ -152,7 +154,7 @@ This isolation makes debugging, testing, and scaling much easier.
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ### Install Python dependencies
 
@@ -174,20 +176,30 @@ Modify YAML files under config/ for:
 - Model weight paths
 - Pipeline hyperparameters
 
-## 📦 Datasets
+---
+
+## Datasets
 
 Large datasets are not stored in Git.
 
 ### Dataset Workflow
 
 - Place raw video/image datasets in:
+
+  ```
   data/raw/
+  ```
 
 - Place COCO-style labels or metadata in:
+
+  ```
   data/annotations/
+  ```
 
 - Preprocessing outputs (skeleton sequences, splits) saved in:
+  ```
   data/processed/
+  ```
 
 ### Automated Dataset Download:
 
@@ -199,7 +211,9 @@ python tools/download_datasets.py
 
 data/README.md
 
-## 🏋️ Training Models
+---
+
+## Training Models
 
 ### Train YOLOv11-Pose
 
@@ -220,9 +234,14 @@ python training/utils/preprocessing.py
 ```
 
 Training outputs automatically saved under:
-models/\*/weights/
 
-## 🚀 Running Real-Time Inference
+```
+models/*/weights/
+```
+
+---
+
+## Running Real-Time Inference
 
 To start the full real-time pipeline:
 
@@ -240,4 +259,116 @@ This will:
 - Fuse predictions
 - Output statuses + radar tracking commands
 
-## 🐳 Docker Deployment
+---
+
+## Docker Deployment
+
+### Build Docker Image
+
+```bash
+docker build -t medical-inference .
+```
+
+### Run Inference Container
+
+```bash
+docker compose up -d
+```
+
+This mounts:
+
+- Logs → runtime/logs/
+- Video outputs → runtime/recordings/
+- Optional model weight volumes
+
+Designed for Jetson AGX Orin deployment.
+
+---
+
+## Configuration Files
+
+### cameras.yaml
+
+Defines:
+
+- Camera IDs
+- RTSP/USB URLs
+- Resolution & FPS
+
+### models.yaml
+
+Paths for:
+
+- YOLO models
+- ST-GCN weights
+- Depth model
+- DeepFace config
+
+### pipeline.yaml
+
+Includes:
+
+- Pose buffer length
+- Update frequencies for depth + face
+- Distress thresholds
+- Radar target rules
+
+---
+
+## Development Guidelines
+
+- Keep training code out of src/
+- Add tests for every major module (tests/)
+- Never commit large datasets or weights
+- Document dataset preparation in data/README.md
+- Keep Docker image lean using .dockerignore
+- Use environment variables for device-specific paths
+
+---
+
+## Troubleshooting & FAQ
+
+**Q: Can this track multiple people at once?**
+
+Yes — tracking + pose buffers + ST-GCN handle multiple individuals simultaneously.
+
+**Q: Do I need a separate model per person?**
+
+No — all individuals share the same model instances.
+
+**Q: Does this require Kubernetes?**
+
+No.
+Docker alone handles single-device deployments well.
+
+**Q: Why isn’t my camera feed opening?**
+
+Check:
+
+- Camera URL in cameras.yaml
+- GPU memory usage
+- Docker permissions (/dev/video\* mappings)
+
+**Q: Where do logs go?**
+
+```
+runtime/logs/
+```
+
+**Q: Where are debug videos saved?**
+
+```
+runtime/recordings/
+```
+
+---
+
+## Final Notes
+
+This repository provides:
+
+- A modular runtime pipeline
+- A complete training workflow
+- A scalable deployment solution
+- A clean dataset management strategy
+- Multi-sensor capabilities (vision + radar)
