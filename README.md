@@ -43,6 +43,7 @@ The system operates **continuously and concurrently per camera**, analyzing all 
 
 Our Pipeline Architecture is shown below:
 
+```
 Camera Feed
 ↓
 YOLOv11-Pose (keypoints + boxes)
@@ -60,6 +61,7 @@ ST-GCN (temporal action + distress classification)
 Fusion Engine (final smoothed distress status)
 ↓
 Radar Controller (aims radar at targets)
+```
 
 Each component runs in real time to produce continuous status updates for every tracked individual.
 
