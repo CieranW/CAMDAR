@@ -23,17 +23,17 @@ Built to run on the **NVIDIA Jetson AGX Orin**, but compatible with any CUDA-ena
 
 ## Table of Contents
 
-1. [Pipeline Architecture](#-pipeline-architecture)
-2. [Repository Structure](#️-repository-structure)
-3. [Rationale Behind Structure](#-rationale-behind-structure)
-4. [Installation & Setup](#️-installation--setup)
-5. [Datasets](#-datasets)
-6. [Training Models](#%ef%b8%8f-training-models)
-7. [Running Inference](#-running-real-time-inference)
-8. [Docker Deployment](#-docker-deployment)
-9. [Configuration Files](#️-configuration-files)
-10. [Development Guidelines](#-development-guidelines)
-11. [Troubleshooting / FAQ](#-troubleshooting--faq)
+1. [Pipeline Architecture](#pipeline-architecture)
+2. [Repository Structure](#repository-structure)
+3. [Rationale Behind Structure](#rationale-behind-structure)
+4. [Installation & Setup](#installation--setup)
+5. [Datasets](#datasets)
+6. [Training Models](#training-models)
+7. [Running Real-Time Inference](#running-real-time-inference)
+8. [Docker Deployment](#docker-deployment)
+9. [Configuration Files](#configuration-files)
+10. [Development Guidelines](#development-guidelines)
+11. [Troubleshooting / FAQ](#troubleshooting--faq)
 
 ---
 
