@@ -32,8 +32,9 @@ Built to run on the **NVIDIA Jetson AGX Orin**, but compatible with any CUDA-ena
 7. [Running Real-Time Inference](#running-real-time-inference)
 8. [Docker Deployment](#docker-deployment)
 9. [Configuration Files](#configuration-files)
-10. [Development Guidelines](#development-guidelines)
-11. [Troubleshooting / FAQ](#troubleshooting--faq)
+10. [Alerts & GUI Dashboard] (#alerts--gui-dashboard)
+11. [Development Guidelines](#development-guidelines)
+12. [Troubleshooting / FAQ](#troubleshooting--faq)
 
 ---
 
@@ -61,6 +62,10 @@ ST-GCN (Temporal Action + Distress Classification)
 Fusion Engine (Final Smoothed Distress Status)
 ↓
 Radar Controller (Aims Radar at Targets)
+↓
+Alert (Notification Upon Abnormal Detection)
+↓
+GUI (Constant Visual Output)
 ```
 
 Each component runs in real time to produce continuous status updates for every tracked individual.
@@ -80,7 +85,8 @@ CAMDAR/
 ├── config/
 │ ├── cameras.yaml
 │ ├── models.yaml
-│ └── pipeline.yaml
+│ ├── pipeline.yaml
+│ └── alerts.yaml
 │
 ├── data/
 │ ├── raw/
@@ -102,16 +108,18 @@ CAMDAR/
 │ └── face/
 │
 ├── src/
+│ ├── alerts/
 │ ├── camera/
-│ ├── detection/
-│ ├── tracking/
-│ ├── temporal/
 │ ├── depth/
+│ ├── detection/
 │ ├── face/
 │ ├── fusion/
+│ ├── pipeline/
 │ ├── radar/
-│ ├── utils/
-│ └── pipeline/
+│ ├── temporal/
+│ ├── tracking/
+│ ├── ui/
+│ └── utils/
 │
 ├── runtime/
 │ ├── logs/
@@ -315,6 +323,175 @@ Includes:
 
 ---
 
+## Alerts & GUI Dashboard
+
+The CAMDAR system includes a built-in **alerting engine** and a **web-based monitoring dashboard** for viewing real-time system status, track states, view logs, view real-time video feed, and medical distress alerts
+
+This functionality is powered by:
+
+- **AlertManager** -- Central dispatcher for all alerts
+- **Alert Channels** -- Where alerts are sent (UI, logs, webhooks, email, etc.)
+- **StateStore** -- Shared in-memory state for GUI consumption
+- **FastAPI-Based GUI/API Server** -- Real-time view of the system
+- **Websocket/REST API Endpoints** -- For dashboards, mobile apps, or external systems
+
+### Alerting System
+
+CAMDAR raises alerts when the Decision Fusion module determines an individual is exhibiting potential medical distress based on:
+
+- ST-GCN Distress Probability
+- Facial Expression Changes
+- Pose or Movement Anomalies
+- 3D Motion Instability
+- Duration-Based Thresholds (e.g., "sustained distress for > 3 seconds")
+- Unusual Vital Sign Activity
+
+Alerts include:
+
+- Severity (Info/Warning/Critical)
+- Camera ID
+- Track ID
+- Timestamp
+- Message
+- Optional Metadata:
+
+  - 3D Coordinates
+  - Classification Probabilities
+  - Recent Pose Evolution
+
+### Alert File Structure
+
+Alerts are implemented under:
+
+```
+src/
+├── alerts/
+│   ├── alert_models.py      # Alert dataclasses
+│   ├── alert_manager.py     # Orchestrates alert routing
+│   └── channels/
+│       ├── log_channel.py
+│       ├── ui_channel.py
+│       ├── email_channel.py
+│       └── webhook_channel.py
+```
+
+Alert behavior is configured via:
+
+```
+config/alerts.yaml
+```
+
+This file defines thresholds, durations, and which alert channels are active.
+
+### GUI Dashboard
+
+CAMDAR includes a lightweight **web dashboard** developed with FastAPI.
+It provides real-time insight into:
+
+- Active Tracks & Individuals
+- Distress Classifications
+- Fused Status (Normal/Elevated Risk/High-Distress/Uncertain)
+- Recent Alerts
+- Per-Camera Live State
+- System Health Metrics
+
+The dashboard runs inside the same container as CAMDAR by default.
+
+### Accessing the GUI
+
+Once CAMDAR is running (Docker or local), the GUI becomes available at:
+
+```
+http://<device-ip>:8000
+```
+
+On Jetson, this may be:
+
+```
+http://localhost:8000
+```
+
+Or from another machine on the network:
+
+```
+http://jetson-orin.local:8000
+```
+
+### GUI Architecture
+
+```
+src/ui/
+├── server.py        # FastAPI web server
+├── routes.py        # API & websocket endpoints
+└── state_store.py   # Shared system state for UI
+```
+
+**StateStore** keeps:
+
+- Current Status per Track (per Camera)
+- Historical Alerts
+- Radar Engagement Info
+- Optional Live Coordinates
+
+The UIChannel pushes alerts into this store so the GUI updates instantly in real-time.
+
+### API Endpoints
+
+Examples of API routes exposed by the GUI server:
+
+```
+GET /api/state
+GET /api/alerts
+GET /api/cameras
+WS  /api/stream/alerts       # (optional) realtime alert stream
+```
+
+This makes integration possible with:
+
+- Mobile Apps
+- Medical Response Dashboards
+- Edge Monitoring Platforms
+- IoT Systems
+- ROS Nodes
+
+### Docker Support for GUI
+
+The GUI is build directly into the CAMDAR container.
+
+Make sure your docker-compose.yml exposes the UI port:
+
+```yaml
+services:
+  camdar:
+    build: .
+    ports:
+      - "8000:8000"
+```
+
+Logs and recordings remain under:
+
+```
+runtime/logs/
+runtime/recordings/
+```
+
+### Integration into Pipeline
+
+The CameraPipeline calls into AlertManager after DecisionFuser updates a track's state:
+
+```
+DecisionFuser → AlertManager → UI/Log/Webhook/Email
+```
+
+At runtime, the GUI then displays:
+
+- Per-Track Distress Levels
+- Per-Camera View
+- Alerts in Chronological Order
+- Optional Probability Heatmaps/Motion Metrics
+
+---
+
 ## Development Guidelines
 
 - Keep training code out of src/
@@ -352,13 +529,17 @@ Check:
 **Q: Where do logs go?**
 
 ```
+
 runtime/logs/
+
 ```
 
 **Q: Where are debug videos saved?**
 
 ```
+
 runtime/recordings/
+
 ```
 
 ---
@@ -372,3 +553,7 @@ This repository provides:
 - A scalable deployment solution
 - A clean dataset management strategy
 - Multi-sensor capabilities (vision + radar)
+
+```
+
+```
