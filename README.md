@@ -109,13 +109,16 @@ CAMDAR/
 │
 ├── src/
 │ ├── alerts/
+│ ├── api/
 │ ├── camera/
+│ ├── db/
 │ ├── depth/
 │ ├── detection/
 │ ├── face/
 │ ├── fusion/
 │ ├── pipeline/
 │ ├── radar/
+│ ├── services/
 │ ├── temporal/
 │ ├── tracking/
 │ ├── ui/
@@ -173,7 +176,7 @@ pip install -r requirements.txt
 ### Configure Environment Variables
 
 ```bash
-cp .env .env
+cp .env.example .env
 ```
 
 ### Edit Configuration Files
